@@ -1,11 +1,23 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { COOKIE_ESTILO, ESTILOS, type Estilo } from "@/lib/estilos";
+import { useEffect } from "react";
+import { COOKIE_ESTILO, ESTILOS, esEstilo, type Estilo } from "@/lib/estilos";
 
 /** Guarda el estilo elegido solo para esta demo (la cookie viaja únicamente a /demo/<slug>). */
 function recordarEstilo(slug: string, estilo: Estilo) {
   document.cookie = `${COOKIE_ESTILO}=${estilo}; path=/demo/${slug}; max-age=${60 * 60 * 24 * 30}; samesite=lax`;
+}
+
+function estiloRecordado(): Estilo | undefined {
+  const valor = document.cookie.match(new RegExp(`(?:^|; )${COOKIE_ESTILO}=([^;]*)`))?.[1];
+  return esEstilo(valor) ? valor : undefined;
+}
+
+/** La misma URL sin ?estilo= (para que mande la cookie), conservando el resto (ej. ?dia=). */
+function urlSinEstilo() {
+  const url = new URL(window.location.href);
+  url.searchParams.delete("estilo");
+  return url.pathname + url.search + url.hash;
 }
 
 /**
@@ -14,15 +26,32 @@ function recordarEstilo(slug: string, estilo: Estilo) {
  * estilo. Usa sus propios colores neutros para no confundirse con el diseño del local.
  */
 export function SelectorEstilo({ actual, slug }: { actual: Estilo; slug: string }) {
-  const router = useRouter();
+  // Si el navegador muestra una copia guardada de la página (ej. al volver con
+  // "atrás") y el estilo elegido cambió mientras tanto, se recarga con el correcto.
+  useEffect(() => {
+    const revisar = () => {
+      const recordado = estiloRecordado();
+      const enUrl = new URL(window.location.href).searchParams.get("estilo");
+      if (enUrl || !recordado || recordado === actual) return;
+      // Freno: como mucho una recarga automática cada 10 segundos.
+      try {
+        const ultima = Number(sessionStorage.getItem("estilo-recarga") ?? 0);
+        if (Date.now() - ultima < 10_000) return;
+        sessionStorage.setItem("estilo-recarga", String(Date.now()));
+      } catch {
+        return;
+      }
+      window.location.reload();
+    };
+    revisar();
+    window.addEventListener("pageshow", revisar);
+    return () => window.removeEventListener("pageshow", revisar);
+  }, [actual]);
 
   function elegir(estilo: Estilo) {
     recordarEstilo(slug, estilo);
-    // Sin ?estilo= en la URL, para que mande la cookie; se conservan los demás parámetros (ej. ?dia=).
-    const url = new URL(window.location.href);
-    url.searchParams.delete("estilo");
-    router.replace(url.pathname + url.search, { scroll: false });
-    router.refresh();
+    // Recarga completa: así no quedan pedidos viejos que pisen el estilo nuevo.
+    window.location.replace(urlSinEstilo());
   }
 
   return (
