@@ -9,9 +9,14 @@ import { redirect } from "next/navigation";
 const COOKIE = "panel";
 const DURACION_DIAS = 30;
 
+/** Falta una variable de entorno del panel: se muestra tal cual en la pantalla del PIN. */
+export class ErrorConfiguracion extends Error {}
+
 function secreto() {
-  const s = process.env.SESSION_SECRET;
-  if (!s || s.length < 32) throw new Error("SESSION_SECRET falta o es corto (mínimo 32 caracteres)");
+  const s = process.env.SESSION_SECRET?.trim();
+  if (!s || s.length < 32) {
+    throw new ErrorConfiguracion("falta SESSION_SECRET en el servidor, o tiene menos de 32 caracteres");
+  }
   return s;
 }
 
@@ -24,8 +29,8 @@ const iguales = (a: string, b: string) => {
 };
 
 export function pinCorrecto(pin: string): boolean {
-  const esperado = process.env.PANEL_PIN;
-  if (!esperado) throw new Error("Falta PANEL_PIN");
+  const esperado = process.env.PANEL_PIN?.trim();
+  if (!esperado) throw new ErrorConfiguracion("falta PANEL_PIN en el servidor");
   return iguales(pin, esperado);
 }
 

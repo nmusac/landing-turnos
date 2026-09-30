@@ -7,7 +7,7 @@ import { programarAvisos } from "@/lib/aviso";
 import { buscarServicio, profesionalesPara } from "@/lib/disponibilidad";
 import { rutaBase } from "@/lib/formato";
 import { resolverNegocio } from "@/lib/negocio";
-import { cerrarSesion, exigirSesion, iniciarSesion, pinCorrecto } from "@/lib/sesion";
+import { cerrarSesion, ErrorConfiguracion, exigirSesion, iniciarSesion, pinCorrecto } from "@/lib/sesion";
 import { HorarioOcupado, store } from "@/lib/store";
 import { aUtc, esFecha, esHora, sumarDias } from "@/lib/tiempo";
 import { esEmail, texto } from "@/lib/validar";
@@ -33,13 +33,21 @@ async function conSesion(datos: FormData) {
 
 export async function ingresar(_: string | null, datos: FormData): Promise<string | null> {
   const n = await negocioDe(datos);
-  const pin = String(datos.get("pin") ?? "");
-  if (!pinCorrecto(pin)) {
-    // Frena un poco los intentos en serie.
-    await new Promise((r) => setTimeout(r, 800));
-    return "PIN incorrecto.";
+  const pin = String(datos.get("pin") ?? "").trim();
+  try {
+    if (!pinCorrecto(pin)) {
+      // Frena un poco los intentos en serie.
+      await new Promise((r) => setTimeout(r, 800));
+      return "PIN incorrecto.";
+    }
+    await iniciarSesion();
+  } catch (e) {
+    // Sin esto, en producción solo se vería una pantalla de error genérica.
+    if (!(e instanceof ErrorConfiguracion)) throw e;
+    console.error("Panel mal configurado:", e.message);
+    return `El panel no está bien configurado: ${e.message}. Revisá las variables de entorno y volvé a publicar.`;
   }
-  await iniciarSesion();
+  // Fuera del try: redirect() funciona lanzando una excepción que Next tiene que recibir.
   redirect(`${rutaBase(n)}/panel`);
 }
 
