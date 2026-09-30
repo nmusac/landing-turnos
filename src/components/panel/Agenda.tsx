@@ -32,7 +32,8 @@ export async function Agenda({ negocio: n, diaPedido }: { negocio: Negocio; diaP
 
   return (
     <main data-estilo={n.estilo} style={variablesTema(n)} className="flex-1 bg-fondo text-texto">
-      <div className="mx-auto w-full max-w-3xl px-4 py-6 sm:px-8">
+      {/* En las demos, espacio abajo para que la barrita de estilos no tape botones. */}
+      <div className={`mx-auto w-full max-w-3xl px-4 py-6 sm:px-8 ${n.esDemo ? "pb-24" : ""}`}>
         <header className="flex items-center justify-between gap-4">
           <h1 className="subtitulo text-2xl">{n.nombre}</h1>
           <form action={salir}>

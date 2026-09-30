@@ -1,7 +1,8 @@
 import "server-only";
+import { cookies } from "next/headers";
 import { negocio as base, type Negocio } from "@/negocio.config";
 import { appsScriptConfigurado, llamarAppsScript } from "./appsScript";
-import type { Estilo } from "./estilos";
+import { COOKIE_ESTILO, esEstilo, type Estilo } from "./estilos";
 import { negocioDesdeProspecto, type FilaProspecto } from "./prospecto";
 
 /** Las rutas /demo/* solo existen en el sitio de demos de la agencia (DEMOS=1). */
@@ -33,6 +34,17 @@ function filaProspecto(slug: string): Promise<FilaProspecto | null> {
   // Un error no queda guardado: la próxima visita vuelve a intentar.
   valor.catch(() => cache.delete(slug));
   return valor;
+}
+
+/**
+ * Estilo pedido para una demo: `?estilo=` en la URL (links compartidos) o, si no
+ * hay, el último elegido en la barrita de esa demo (cookie). Sin ninguno, la
+ * demo usa el de su fila o el que corresponde a su rubro.
+ */
+export async function estiloDemo(pedido: unknown): Promise<Estilo | undefined> {
+  if (esEstilo(pedido)) return pedido;
+  const guardado = (await cookies()).get(COOKIE_ESTILO)?.value;
+  return esEstilo(guardado) ? guardado : undefined;
 }
 
 /**

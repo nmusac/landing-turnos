@@ -59,7 +59,10 @@ export const ESTILOS = {
 
 export type Estilo = keyof typeof ESTILOS;
 
-export const esEstilo = (v: unknown): v is Estilo => typeof v === "string" && v in ESTILOS;
+/** Cookie con el estilo elegido en la barrita de una demo; su `path` la limita a esa demo. */
+export const COOKIE_ESTILO = "estilo-demo";
+
+export const esEstilo =(v: unknown): v is Estilo => typeof v === "string" && v in ESTILOS;
 
 /** Colores finales: los del estilo más los retoques propios del negocio. */
 export const temaDe = (n: Negocio): Tema => ({ ...ESTILOS[n.estilo].tema, ...n.tema });

@@ -245,7 +245,8 @@ export function Landing({ negocio }: { negocio: Negocio }) {
           </section>
         </main>
 
-        <footer className={`${contenedor} flex flex-wrap justify-between gap-2 py-8 text-sm text-suave`}>
+        {/* En las demos, espacio abajo para que la barrita de estilos no tape "Acceso del local". */}
+        <footer className={`${contenedor} flex flex-wrap justify-between gap-2 py-8 text-sm text-suave ${negocio.esDemo ? "pb-24" : ""}`}>
           <span>{[negocio.nombre, negocio.ciudad].filter(Boolean).join(", ")}</span>
           <a href={`${rutaBase(negocio)}/panel`} className="hover:underline">
             Acceso del local

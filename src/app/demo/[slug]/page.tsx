@@ -2,15 +2,13 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Landing } from "@/components/Landing";
 import { SelectorEstilo } from "@/components/SelectorEstilo";
-import { esEstilo } from "@/lib/estilos";
-import { resolverNegocio } from "@/lib/negocio";
+import { estiloDemo, resolverNegocio } from "@/lib/negocio";
 
 // Demo de la landing para un prospecto, armada desde su fila en la planilla (demos/README.md).
-// ?estilo=verde|noche|salon muestra la misma demo en otro estilo.
+// ?estilo=verde|noche|salon o la barrita "Vista previa" la muestran en otro estilo.
 
 async function negocioDe({ params, searchParams }: PageProps<"/demo/[slug]">) {
-  const estilo = (await searchParams).estilo;
-  return resolverNegocio((await params).slug, esEstilo(estilo) ? estilo : undefined);
+  return resolverNegocio((await params).slug, await estiloDemo((await searchParams).estilo));
 }
 
 export async function generateMetadata(props: PageProps<"/demo/[slug]">): Promise<Metadata> {
@@ -30,7 +28,7 @@ export default async function Demo(props: PageProps<"/demo/[slug]">) {
   return (
     <>
       <Landing negocio={n} />
-      <SelectorEstilo actual={n.estilo} />
+      <SelectorEstilo actual={n.estilo} slug={n.slug} />
     </>
   );
 }

@@ -6,7 +6,8 @@ código ni publicar nada: cada prospecto es una fila de una planilla.
 
 - Landing: `https://<sitio-de-demos>/demo/<slug>`. Abajo aparece una barrita "Vista previa: Verde ·
   Noche · Salón" para mostrarle al prospecto la misma web en los 3 estilos (también por link:
-  `…/demo/<slug>?estilo=noche`). La barrita solo existe en las demos.
+  `…/demo/<slug>?estilo=noche`). La barrita solo existe en las demos. La elección se recuerda para esa
+  demo, así el panel (`/demo/<slug>/panel`) abre en el mismo estilo; el panel también tiene la barrita.
 - Panel (para mostrarle al peluquero cómo ve sus turnos): `/demo/<slug>/panel`, con el PIN de demos.
 
 Las reservas que se hagan en una demo quedan en la misma planilla, separadas por
