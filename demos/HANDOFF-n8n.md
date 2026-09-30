@@ -143,7 +143,8 @@ function horarios(oh) {
     if (/24 horas|24 hours/.test(h)) { tramos.push(`${d} 00:00-23:59`); continue; }
     const franjas = [];
     for (const f of h.split(/,|\s+y\s+/)) {
-      const [a, b] = f.split(/\s*[–—-]\s*|\s+a\s+/);
+      // Apify a veces devuelve "10:30 AM to 7 PM" (en inglés, aunque el idioma sea "es").
+      const [a, b] = f.split(/\s*[–—-]\s*|\s+(?:a|to)\s+/);
       if (!a || !b) return ''; // formato raro: mejor dejar vacío y usar la plantilla
       const sufB = (b.match(/([ap])\.? ?m/) || [])[1];
       const fin = a24(b);
@@ -164,7 +165,10 @@ return $input.all()
   .filter((p) => RUBROS.test(sinTildes(p.categoryName || p.rubro || '')))
   .map((p) => {
     const id = p.placeId || p.place_id || p.url;
-    const fotos = (p.imageUrls && p.imageUrls.length ? p.imageUrls : [p.imageUrl]).filter(Boolean);
+    // Street View muestra la calle, no el local: se usa solo si no hay otra foto.
+    const todas = (p.imageUrls && p.imageUrls.length ? p.imageUrls : [p.imageUrl]).filter(Boolean);
+    const delLocal = todas.filter((u) => !/streetviewpixels/.test(u));
+    const fotos = delLocal.length ? delLocal : todas;
     const slug = slugDe(p.title || p.nombre, id);
     const web = p.website || p.link_actual || '';
     return {
