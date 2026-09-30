@@ -1,5 +1,6 @@
 import type { CSSProperties } from "react";
-import type { Horarios, Negocio, Servicio, Tema } from "@/negocio.config";
+import type { Horarios, Negocio, Servicio } from "@/negocio.config";
+import { ESTILOS, temaDe } from "./estilos";
 import { aUtc } from "./tiempo";
 
 export const precio = (moneda: string, p: number | null) =>
@@ -60,8 +61,12 @@ export function linkCalendario(n: Negocio, servicio: Servicio, fecha: string, ho
 /** Prefijo de las rutas del negocio: "" en un sitio de cliente, "/demo/<slug>" en una demo. */
 export const rutaBase = (n: Negocio) => (n.esDemo ? `/demo/${n.slug}` : "");
 
-export const variablesTema = (t: Tema) =>
-  ({
+/** Variables CSS del estilo del negocio (colores y esquinas); se aplican junto a data-estilo. */
+export function variablesTema(n: Negocio) {
+  const t = temaDe(n);
+  return {
+    "--radio-boton": ESTILOS[n.estilo].radioBoton,
+    "--radio-caja": ESTILOS[n.estilo].radioCaja,
     "--hero": t.hero,
     "--sobre-hero": t.sobreHero,
     "--fondo": t.fondo,
@@ -71,4 +76,5 @@ export const variablesTema = (t: Tema) =>
     "--linea": t.linea,
     "--acento": t.acento,
     "--sobre-acento": t.sobreAcento,
-  }) as CSSProperties;
+  } as CSSProperties;
+}

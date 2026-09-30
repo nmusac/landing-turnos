@@ -36,7 +36,7 @@ function Paso({ n, titulo, children, activo }: { n: number; titulo: string; chil
 }
 
 const opcion = (elegida: boolean) =>
-  `border px-3 py-2 text-left ${elegida ? "border-texto bg-texto text-superficie" : "border-linea bg-superficie hover:border-texto"}`;
+  `rounded-(--radio-caja) border px-3 py-2 text-left ${elegida ? "border-texto bg-texto text-superficie" : "border-linea bg-superficie hover:border-texto"}`;
 
 export function Reservar() {
   const { negocio, sel, setSel } = useReserva();
@@ -126,7 +126,7 @@ export function Reservar() {
   if (confirmada) {
     return (
       <div className="bg-superficie border-t-4 border-acento p-6 sm:p-10" role="status">
-        <p className="titular text-5xl sm:text-6xl">Listo, {confirmada.nombre}.</p>
+        <p className="titular [--t:3rem] sm:[--t:3.75rem]">Listo, {confirmada.nombre}.</p>
         <p className="mt-4 text-lg max-w-prose">
           Te esperamos el <strong>{fechaLarga(confirmada.fecha)}</strong> a las <strong>{confirmada.hora}</strong> para{" "}
           {confirmada.servicio.nombre.toLowerCase()}
@@ -141,7 +141,7 @@ export function Reservar() {
             href={linkCalendario(negocio, confirmada.servicio, confirmada.fecha, confirmada.hora)}
             target="_blank"
             rel="noreferrer"
-            className="bg-acento text-sobre-acento px-5 py-3 font-semibold"
+            className="rounded-(--radio-boton) bg-acento text-sobre-acento px-5 py-3 font-semibold"
           >
             Agregar a mi calendario
           </a>
@@ -273,7 +273,7 @@ export function Reservar() {
         <form onSubmit={enviar} className="grid gap-4 max-w-md">
           <label className="grid gap-1">
             <span className="text-sm font-semibold">Nombre</span>
-            <input name="nombre" required minLength={2} maxLength={80} autoComplete="name" disabled={!sel.hora} className="border border-linea bg-superficie px-3 py-2.5" />
+            <input name="nombre" required minLength={2} maxLength={80} autoComplete="name" disabled={!sel.hora} className="rounded-(--radio-caja) border border-linea bg-superficie px-3 py-2.5" />
           </label>
           <label className="grid gap-1">
             <span className="text-sm font-semibold">Celular</span>
@@ -285,7 +285,7 @@ export function Reservar() {
               autoComplete="tel"
               placeholder="099 123 456"
               disabled={!sel.hora}
-              className="border border-linea bg-superficie px-3 py-2.5"
+              className="rounded-(--radio-caja) border border-linea bg-superficie px-3 py-2.5"
             />
             <span className="text-xs text-suave">Solo lo usamos si hay que avisarte de un cambio.</span>
           </label>
@@ -299,7 +299,7 @@ export function Reservar() {
               autoComplete="email"
               placeholder="nombre@gmail.com"
               disabled={!sel.hora}
-              className="border border-linea bg-superficie px-3 py-2.5"
+              className="rounded-(--radio-caja) border border-linea bg-superficie px-3 py-2.5"
             />
             <span className="text-xs text-suave">Te mandamos la confirmación acá, y un aviso si el local tiene que cancelar.</span>
           </label>
@@ -307,7 +307,7 @@ export function Reservar() {
             <span className="text-sm font-semibold">
               Algo que debamos saber <span className="font-normal text-suave">(opcional)</span>
             </span>
-            <textarea name="nota" rows={2} maxLength={300} disabled={!sel.hora} className="border border-linea bg-superficie px-3 py-2.5" />
+            <textarea name="nota" rows={2} maxLength={300} disabled={!sel.hora} className="rounded-(--radio-caja) border border-linea bg-superficie px-3 py-2.5" />
           </label>
           <input name="sitio" tabIndex={-1} autoComplete="off" aria-hidden className="absolute -left-[9999px]" />
 
@@ -325,7 +325,7 @@ export function Reservar() {
           <button
             type="submit"
             disabled={!sel.hora || enviando}
-            className="bg-acento text-sobre-acento px-6 py-3.5 font-semibold text-lg disabled:opacity-50 justify-self-start"
+            className="rounded-(--radio-boton) bg-acento text-sobre-acento px-6 py-3.5 font-semibold text-lg disabled:opacity-50 justify-self-start"
           >
             {enviando ? "Reservando…" : "Reservar turno"}
           </button>

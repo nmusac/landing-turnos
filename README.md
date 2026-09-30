@@ -52,7 +52,12 @@ Ver [google-sheets/README.md](google-sheets/README.md).
      deja libre recién las 10:30. No bajar la duración para "alinearla": los turnos se pisarían.
    - `profesionales`: con uno solo, el paso "Con quién" no aparece.
    - Fotos: idealmente las del local, en `public/fotos/` y con `src: "/fotos/…"`.
-   - `tema`: colores. Revisar contraste de `acento`/`sobreAcento` y `hero`/`sobreHero`.
+   - `estilo`: `"verde"` (verde botella, títulos angostos), `"noche"` (barbería clásica: negro, crema
+     y cobre, títulos en Playfair) o `"salon"` (peluquería femenina: rosa empolvado y bordó, títulos en
+     Cormorant cursiva, bordes redondeados). Mismo contenido y fotos en los tres; están definidos en
+     `src/lib/estilos.ts`.
+   - `tema` (opcional): retocar colores sueltos del estilo, ej. `tema: { acento: "#B3261E" }`.
+     Revisar contraste de `acento`/`sobreAcento` y `hero`/`sobreHero`.
 3. Crear su planilla con el Apps Script (ver `google-sheets/README.md`).
 4. Crear el proyecto en Vercel y cargar las variables de `.env.example`
    (PIN nuevo y `SESSION_SECRET` nuevo por cliente, y `SITIO_URL` con su dirección).

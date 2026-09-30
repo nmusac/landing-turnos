@@ -1,6 +1,7 @@
 // Arma un Negocio a partir de una fila de la hoja "prospectos" (ver demos/README.md).
 // Todo lo que la fila deja vacío sale de la plantilla base (negocio.config.ts).
 import type { Foto, Horarios, Negocio } from "@/negocio.config";
+import { ESTILOS, esEstilo, type Estilo } from "./estilos";
 import { aWhatsapp } from "./formato";
 
 export type FilaProspecto = Record<string, string | undefined>;
@@ -85,7 +86,20 @@ function whatsappDe(...valores: (string | undefined)[]) {
   return undefined;
 }
 
-export function negocioDesdeProspecto(f: FilaProspecto, base: Negocio): Negocio | null {
+/** Estilo según el rubro y el nombre: barberías en Noche, salones y estéticas en Salón. */
+export function estiloSegunRubro(rubro: string, nombre: string): Estilo {
+  const texto = sinTildes(`${rubro} ${nombre}`);
+  if (/barber/.test(texto)) return "noche";
+  if (/belleza|estetica|beauty|salon|mujer|femenin|unas|nails|spa\b|maquillaje|lashes|cejas/.test(texto)) return "salon";
+  return "verde";
+}
+
+/**
+ * `estiloPedido` es el que se eligió en el selector de la demo (?estilo=). Los
+ * colores propios de la fila (color_hero, color_acento) solo se aplican al
+ * estilo de la fila, no a los otros dos.
+ */
+export function negocioDesdeProspecto(f: FilaProspecto, base: Negocio, estiloPedido?: Estilo): Negocio | null {
   const t = (k: string) => f[k]?.trim() || undefined;
   const slug = t("slug");
   const nombre = t("nombre");
@@ -96,8 +110,14 @@ export function negocioDesdeProspecto(f: FilaProspecto, base: Negocio): Negocio 
   const rubro = t("rubro") ?? "Peluquería";
   const fotos = leerFotos(f.foto_portada, `Foto de ${nombre}`);
   const galeria = leerFotos(f.fotos_galeria, `Foto de ${nombre}`);
-  const hero = esColor(f.color_hero) ? f.color_hero.trim() : base.tema.hero;
-  const acento = esColor(f.color_acento) ? f.color_acento.trim() : base.tema.acento;
+
+  const columna = t("estilo")?.toLowerCase();
+  const estiloFila = esEstilo(columna) ? columna : estiloSegunRubro(rubro, nombre);
+  const estilo = estiloPedido ?? estiloFila;
+  const propio = ESTILOS[estilo].tema;
+  const colores = estilo === estiloFila;
+  const hero = colores && esColor(f.color_hero) ? f.color_hero.trim() : undefined;
+  const acento = colores && esColor(f.color_acento) ? f.color_acento.trim() : undefined;
 
   return {
     ...base,
@@ -121,12 +141,10 @@ export function negocioDesdeProspecto(f: FilaProspecto, base: Negocio): Negocio 
       portada: fotos[0] ?? galeria[0] ?? base.fotos.portada,
       galeria: galeria.length ? galeria.slice(0, 4) : fotos.length > 1 ? fotos.slice(1, 5) : base.fotos.galeria,
     },
+    estilo,
     tema: {
-      ...base.tema,
-      hero,
-      sobreHero: textoSobre(hero, base.tema.sobreHero, base.tema.texto),
-      acento,
-      sobreAcento: textoSobre(acento, "#FFFFFF", base.tema.sobreAcento),
+      ...(hero && { hero, sobreHero: textoSobre(hero, "#F2F6F3", "#17241F") }),
+      ...(acento && { acento, sobreAcento: textoSobre(acento, "#FFFFFF", propio.texto) }),
     },
     esDemo: true,
   };

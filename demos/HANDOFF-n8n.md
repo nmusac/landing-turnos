@@ -59,7 +59,8 @@ La fila se lee **por nombre de columna** (el orden no importa, los nombres sí).
 | `foto_portada` | 1 link de imagen | Ver "Fotos" |
 | `fotos_galeria` | Hasta 4 links, separados por salto de línea o coma | Si falta, usa las fotos 2 a 5 de la portada o las de la plantilla |
 | `horarios` | Texto, ver formato abajo | Si no se entiende, usa el horario de la plantilla |
-| `color_hero`, `color_acento` | Hex `#RRGGBB` | Opcional; el color del texto encima se calcula solo |
+| `estilo` | `verde`, `noche` o `salon` | Opcional; vacío = según el rubro (barbería → noche; salón de belleza/estética → salon; resto → verde). La demo tiene además un selector para ver los 3 |
+| `color_hero`, `color_acento` | Hex `#RRGGBB` | Opcional; solo para el estilo de la fila; el color del texto encima se calcula solo |
 | `email_avisos` | Email | Opcional: recibe los avisos de reservas hechas en la demo |
 
 **Fotos:** los links de Google Maps (`…googleusercontent.com/…=w408-h306-…`) funcionan directo y el

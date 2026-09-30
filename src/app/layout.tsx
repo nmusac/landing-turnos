@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Archivo } from "next/font/google";
+import { Archivo, Cormorant_Garamond, Playfair_Display } from "next/font/google";
 import { negocio } from "@/negocio.config";
 import { variablesTema } from "@/lib/formato";
 import "./globals.css";
@@ -8,6 +8,22 @@ const archivo = Archivo({
   variable: "--font-archivo",
   subsets: ["latin"],
   axes: ["wdth"],
+});
+
+// Títulos de los estilos "noche" y "salon". Sin preload: el navegador solo las
+// descarga si la página usa ese estilo.
+const playfair = Playfair_Display({
+  variable: "--font-playfair",
+  subsets: ["latin"],
+  preload: false,
+});
+
+const cormorant = Cormorant_Garamond({
+  variable: "--font-cormorant",
+  subsets: ["latin"],
+  weight: ["500", "600"],
+  style: ["italic"],
+  preload: false,
 });
 
 export const metadata: Metadata = {
@@ -23,9 +39,14 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
-  // Colores base; la landing y el panel los vuelven a fijar con los de su negocio (demos).
+  // Estilo base; la landing y el panel lo vuelven a fijar con el de su negocio (demos).
   return (
-    <html lang="es" style={variablesTema(negocio.tema)} className={`${archivo.variable} h-full antialiased`}>
+    <html
+      lang="es"
+      data-estilo={negocio.estilo}
+      style={variablesTema(negocio)}
+      className={`${archivo.variable} ${playfair.variable} ${cormorant.variable} h-full antialiased`}
+    >
       <body className="min-h-full flex flex-col font-sans">{children}</body>
     </html>
   );

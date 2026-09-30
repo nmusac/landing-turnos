@@ -30,7 +30,7 @@ function Lista({ servicio }: { servicio: Servicio }) {
   const hoy = fechaLocal(new Date(), negocio.zonaHoraria);
 
   return (
-    <div className="bg-superficie text-texto p-5 sm:p-6 shadow-[0_24px_60px_-20px_rgba(0,0,0,0.45)]">
+    <div className="rounded-(--radio-caja) bg-superficie text-texto p-5 sm:p-6 shadow-[0_24px_60px_-20px_rgba(0,0,0,0.45)]">
       <h2 className="subtitulo text-2xl">Próximos turnos libres</h2>
       <p className="mt-1 text-sm text-suave">
         {servicio.nombre}, {servicio.duracion} min. Tocá uno para reservarlo.
@@ -39,14 +39,14 @@ function Lista({ servicio }: { servicio: Servicio }) {
       <ul className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-3 min-h-[6.5rem]" aria-live="polite">
         {proximos === null &&
           Array.from({ length: 6 }, (_, i) => (
-            <li key={i} className="h-12 animate-pulse bg-fondo" aria-hidden />
+            <li key={i} className="h-12 animate-pulse bg-fondo rounded-(--radio-boton)" aria-hidden />
           ))}
         {proximos?.map((p) => (
           <li key={p.fecha + p.hora}>
             <button
               type="button"
               onClick={() => elegir({ servicio: servicio.id, fecha: p.fecha, hora: p.hora })}
-              className="flex h-12 w-full flex-col items-center justify-center border border-linea leading-tight hover:border-texto hover:bg-fondo"
+              className="rounded-(--radio-boton) flex h-12 w-full flex-col items-center justify-center border border-linea leading-tight hover:border-texto hover:bg-fondo"
             >
               <span className="text-xs text-suave">{fechaCorta(p.fecha, hoy)}</span>
               <span className="font-semibold tabular-nums">{p.hora}</span>

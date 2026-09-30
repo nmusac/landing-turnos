@@ -4,7 +4,7 @@ import { startTransition, useActionState, useEffect, useRef, useState, type Reac
 import type { Negocio } from "@/negocio.config";
 import { agregarTurno, bloquear, type Estado } from "@/app/panel/acciones";
 
-const campo = "border border-linea bg-superficie px-3 py-2";
+const campo = "rounded-(--radio-caja) border border-linea bg-superficie px-3 py-2";
 
 /**
  * Envía sin el reseteo automático de React: si hay un error, lo escrito queda;
@@ -67,7 +67,7 @@ export function AgregarAgenda({ negocio: n, dia, hoy }: { negocio: Negocio; dia:
     );
 
   return (
-    <section className="mt-10 bg-superficie p-4 sm:p-5" aria-labelledby="agregar">
+    <section className="mt-10 rounded-(--radio-caja) bg-superficie p-4 sm:p-5" aria-labelledby="agregar">
       <h3 id="agregar" className="subtitulo text-2xl">
         Agregar a la agenda
       </h3>
@@ -83,7 +83,7 @@ export function AgregarAgenda({ negocio: n, dia, hoy }: { negocio: Negocio; dia:
             type="button"
             aria-pressed={modo === valor}
             onClick={() => setModo(valor)}
-            className={`border px-3 py-2 text-sm ${modo === valor ? "border-texto bg-texto text-superficie" : "border-linea hover:border-texto"}`}
+            className={`rounded-(--radio-boton) border px-3 py-2 text-sm ${modo === valor ? "border-texto bg-texto text-superficie" : "border-linea hover:border-texto"}`}
           >
             {texto}
           </button>
@@ -134,7 +134,7 @@ export function AgregarAgenda({ negocio: n, dia, hoy }: { negocio: Negocio; dia:
                 <input name="email" type="email" maxLength={120} className={campo} />
               </label>
               <Resultado estado={estado} />
-              <button disabled={pendiente} className="bg-texto text-superficie px-4 py-2.5 font-semibold justify-self-start disabled:opacity-60">
+              <button disabled={pendiente} className="rounded-(--radio-boton) bg-texto text-superficie px-4 py-2.5 font-semibold justify-self-start disabled:opacity-60">
                 {pendiente ? "Agendando…" : "Agendar turno"}
               </button>
             </>
@@ -172,7 +172,7 @@ export function AgregarAgenda({ negocio: n, dia, hoy }: { negocio: Negocio; dia:
                 <input name="motivo" maxLength={100} className={campo} />
               </label>
               <Resultado estado={estado} />
-              <button disabled={pendiente} className="bg-texto text-superficie px-4 py-2.5 font-semibold justify-self-start disabled:opacity-60">
+              <button disabled={pendiente} className="rounded-(--radio-boton) bg-texto text-superficie px-4 py-2.5 font-semibold justify-self-start disabled:opacity-60">
                 {pendiente ? "Bloqueando…" : "Bloquear horario"}
               </button>
               <p className="text-xs text-suave sm:col-span-2">Los turnos ya reservados en ese horario no se cancelan solos.</p>

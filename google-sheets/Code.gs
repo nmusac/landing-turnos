@@ -13,7 +13,7 @@ const HOJAS = {
 };
 
 // Solo en la planilla de demos de la agencia (ver demos/README.md).
-const PROSPECTOS = ['slug', 'nombre', 'rubro', 'frase', 'direccion', 'barrio', 'ciudad', 'telefono', 'whatsapp', 'instagram', 'foto_portada', 'fotos_galeria', 'horarios', 'color_hero', 'color_acento', 'email_avisos'];
+const PROSPECTOS = ['slug', 'nombre', 'rubro', 'frase', 'direccion', 'barrio', 'ciudad', 'telefono', 'whatsapp', 'instagram', 'foto_portada', 'fotos_galeria', 'horarios', 'color_hero', 'color_acento', 'email_avisos', 'estilo'];
 
 /** Correr desde el editor al instalar y después de cada actualización: crea o completa las hojas. */
 function configurar() {

@@ -31,7 +31,7 @@ export async function Agenda({ negocio: n, diaPedido }: { negocio: Negocio; diaP
     id ? (n.profesionales.find((p) => p.id === id)?.nombre ?? id) : "Todo el local";
 
   return (
-    <main style={variablesTema(n.tema)} className="flex-1 bg-fondo text-texto">
+    <main data-estilo={n.estilo} style={variablesTema(n)} className="flex-1 bg-fondo text-texto">
       <div className="mx-auto w-full max-w-3xl px-4 py-6 sm:px-8">
         <header className="flex items-center justify-between gap-4">
           <h1 className="subtitulo text-2xl">{n.nombre}</h1>
@@ -47,7 +47,7 @@ export async function Agenda({ negocio: n, diaPedido }: { negocio: Negocio; diaP
               key={f}
               href={`${panel}?dia=${f}`}
               aria-current={f === dia ? "date" : undefined}
-              className={`shrink-0 min-w-[4.75rem] border px-3 py-2 text-center ${f === dia ? "border-texto bg-texto text-superficie" : "border-linea bg-superficie"}`}
+              className={`shrink-0 min-w-[4.75rem] rounded-(--radio-caja) border px-3 py-2 text-center ${f === dia ? "border-texto bg-texto text-superficie" : "border-linea bg-superficie"}`}
             >
               <span className="block text-sm first-letter:uppercase">{fechaCorta(f, hoy)}</span>
               <span className="block text-xs opacity-70">{porDia(f) === 1 ? "1 turno" : `${porDia(f)} turnos`}</span>
@@ -56,19 +56,19 @@ export async function Agenda({ negocio: n, diaPedido }: { negocio: Negocio; diaP
         </nav>
 
         <div className="mt-8 flex flex-wrap items-end justify-between gap-4">
-          <h2 className="titular text-5xl first-letter:uppercase">{fechaLarga(dia)}</h2>
+          <h2 className="titular [--t:3rem] first-letter:uppercase">{fechaLarga(dia)}</h2>
           <div className="flex items-center gap-3 text-sm">
-            <Link href={`${panel}?dia=${sumarDias(dia, -1)}`} className="border border-linea bg-superficie px-3 py-2" aria-label="Día anterior">
+            <Link href={`${panel}?dia=${sumarDias(dia, -1)}`} className="rounded-(--radio-caja) border border-linea bg-superficie px-3 py-2" aria-label="Día anterior">
               ←
             </Link>
-            <Link href={`${panel}?dia=${sumarDias(dia, 1)}`} className="border border-linea bg-superficie px-3 py-2" aria-label="Día siguiente">
+            <Link href={`${panel}?dia=${sumarDias(dia, 1)}`} className="rounded-(--radio-caja) border border-linea bg-superficie px-3 py-2" aria-label="Día siguiente">
               →
             </Link>
             <form action={panel} className="flex items-center gap-2">
               <label className="sr-only" htmlFor="ir-a-fecha">
                 Ir a fecha
               </label>
-              <input id="ir-a-fecha" type="date" name="dia" defaultValue={dia} required className="border border-linea bg-superficie px-2 py-1.5" />
+              <input id="ir-a-fecha" type="date" name="dia" defaultValue={dia} required className="rounded-(--radio-caja) border border-linea bg-superficie px-2 py-1.5" />
               <button className="underline underline-offset-4">Ir</button>
             </form>
           </div>

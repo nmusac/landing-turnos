@@ -4,7 +4,9 @@ Un único sitio de demos de la agencia muestra la landing de cada peluquería
 prospectada con **su** nombre, dirección, fotos, horarios y colores, sin tocar
 código ni publicar nada: cada prospecto es una fila de una planilla.
 
-- Landing: `https://<sitio-de-demos>/demo/<slug>`
+- Landing: `https://<sitio-de-demos>/demo/<slug>`. Abajo aparece una barrita "Vista previa: Verde ·
+  Noche · Salón" para mostrarle al prospecto la misma web en los 3 estilos (también por link:
+  `…/demo/<slug>?estilo=noche`). La barrita solo existe en las demos.
 - Panel (para mostrarle al peluquero cómo ve sus turnos): `/demo/<slug>/panel`, con el PIN de demos.
 
 Las reservas que se hagan en una demo quedan en la misma planilla, separadas por
@@ -45,7 +47,8 @@ Solo `slug` y `nombre` son obligatorias. Lo que quede vacío sale de la plantill
 | `foto_portada` | Link de una foto | ver "Fotos" |
 | `fotos_galeria` | Hasta 4 links, separados por coma o salto de línea | |
 | `horarios` | Texto: días y franjas separados por `;` | `lun-vie 9:30-19:30; sáb 9 a 14; dom cerrado` |
-| `color_hero`, `color_acento` | Opcional, en hex | `#3B1F2B`, `#E8C547` |
+| `estilo` | Opcional: `verde`, `noche` o `salon`. Vacío = según el rubro (barbería → noche; salón de belleza, estética, uñas → salon; resto → verde) | `salon` |
+| `color_hero`, `color_acento` | Opcional, en hex. Solo se aplican al estilo de la fila | `#3B1F2B`, `#E8C547` |
 | `email_avisos` | Opcional: si querés que te lleguen a vos los avisos de reservas de la demo | `vos@agencia.com` |
 
 ### Fotos

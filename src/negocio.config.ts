@@ -1,3 +1,5 @@
+import type { Estilo } from "@/lib/estilos";
+
 // Todo lo que cambia de un cliente a otro vive en este archivo.
 // Para un negocio nuevo: clonar el repo, editar esto, cargar las variables
 // de entorno y desplegar. Ver README.md.
@@ -68,7 +70,10 @@ export type Negocio = {
   servicios: Servicio[];
   profesionales: Profesional[];
   fotos: { portada: Foto; galeria: Foto[] };
-  tema: Tema;
+  // Estilo visual: "verde", "noche" (barbería clásica) o "salon" (peluquería femenina).
+  // Ver src/lib/estilos.ts. `tema` permite retocar colores sueltos del estilo.
+  estilo: Estilo;
+  tema?: Partial<Tema>;
   esDemo?: boolean; // armado desde la planilla de prospectos (ver demos/README.md)
 };
 
@@ -120,15 +125,6 @@ export const negocio: Negocio = {
       { src: "https://images.unsplash.com/photo-1781455793310-8427c96454c7", alt: "Salón vacío con sillones y espejos antes de abrir" },
     ],
   },
-  tema: {
-    hero: "#1E3B34",
-    sobreHero: "#F2F6F3",
-    fondo: "#E4EDE7",
-    superficie: "#FFFFFF",
-    texto: "#17241F",
-    suave: "#56655F",
-    linea: "#C4D3CA",
-    acento: "#C8962B",
-    sobreAcento: "#1A1406",
-  },
+  estilo: "verde",
+  // Para retocar un color del estilo, por ejemplo: tema: { acento: "#B3261E", sobreAcento: "#FFFFFF" },
 };

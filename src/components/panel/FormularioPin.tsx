@@ -17,7 +17,7 @@ export function FormularioPin({ negocio }: { negocio: string }) {
           autoComplete="current-password"
           required
           autoFocus
-          className="bg-superficie text-texto px-3 py-3 text-2xl tracking-[0.4em]"
+          className="rounded-(--radio-caja) bg-superficie text-texto px-3 py-3 text-2xl tracking-[0.4em]"
         />
       </label>
       {error && (
@@ -25,7 +25,7 @@ export function FormularioPin({ negocio }: { negocio: string }) {
           {error}
         </p>
       )}
-      <button disabled={pendiente} className="bg-acento text-sobre-acento py-3 font-semibold disabled:opacity-60">
+      <button disabled={pendiente} className="rounded-(--radio-boton) bg-acento text-sobre-acento py-3 font-semibold disabled:opacity-60">
         {pendiente ? "Entrando…" : "Entrar"}
       </button>
     </form>

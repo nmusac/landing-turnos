@@ -4,6 +4,7 @@ import { headers } from "next/headers";
 import type { Negocio } from "@/negocio.config";
 import { buscarServicio } from "./disponibilidad";
 import { enviarEmail, type Email } from "./email";
+import { temaDe } from "./estilos";
 import { linkCalendario, linkWhatsapp, rutaBase } from "./formato";
 import type { Reserva } from "./store";
 import { fechaLarga, fechaLocal, horaLocal } from "./tiempo";
@@ -79,8 +80,11 @@ async function webhook(n: Negocio, evento: Evento, r: Reserva) {
 const escapar = (s: string) =>
   s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
 
-const boton = (href: string, texto: string, n: Negocio) =>
-  `<a href="${escapar(href)}" style="display:inline-block;background:${n.tema.acento};color:${n.tema.sobreAcento};padding:12px 20px;text-decoration:none;font-weight:600">${escapar(texto)}</a>`;
+const boton = (href: string, texto: string, n: Negocio) => {
+  const t = temaDe(n);
+  const radio = n.estilo === "salon" ? "999px" : "0";
+  return `<a href="${escapar(href)}" style="display:inline-block;background:${t.acento};color:${t.sobreAcento};padding:12px 20px;text-decoration:none;font-weight:600;border-radius:${radio}">${escapar(texto)}</a>`;
+};
 
 const plantilla = (n: Negocio, titulo: string, cuerpo: string) => `
 <div style="font-family:Arial,Helvetica,sans-serif;max-width:520px;color:#17241F;line-height:1.5">

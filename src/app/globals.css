@@ -19,7 +19,16 @@ body {
   color: var(--texto);
 }
 
-/* Titulares: la misma familia, angosta y pesada, como letrero de vidriera. */
+/*
+ * Titulares. Cada uno declara su tamaño base con --t (ej. [--t:3rem]) y cada
+ * estilo lo multiplica por --escala-titular, porque las tipografías de títulos
+ * tienen anchos muy distintos.
+ */
+.titular {
+  font-size: calc(var(--t, 3rem) * var(--escala-titular, 1));
+}
+
+/* Verde: Archivo angosta y pesada, como letrero de vidriera. */
 .titular {
   font-weight: 800;
   font-stretch: 62%;
@@ -33,6 +42,45 @@ body {
   font-stretch: 75%;
   font-variation-settings: "wdth" 75;
   line-height: 1;
+}
+
+/* Noche: Playfair Display en mayúsculas, como una barbería clásica. */
+[data-estilo="noche"] {
+  --escala-titular: 0.56;
+  /* Barras de desplazamiento, calendarios y campos nativos en oscuro. */
+  color-scheme: dark;
+}
+[data-estilo="noche"] :is(.titular, .subtitulo) {
+  font-family: var(--font-playfair), Georgia, serif;
+  font-weight: 700;
+  font-stretch: normal;
+  font-variation-settings: normal;
+}
+[data-estilo="noche"] .titular {
+  text-transform: uppercase;
+  line-height: 1.02;
+  letter-spacing: -0.015em;
+}
+
+/* Salón: Cormorant Garamond cursiva, fina y elegante. */
+[data-estilo="salon"] {
+  --escala-titular: 0.92;
+}
+[data-estilo="salon"] :is(.titular, .subtitulo) {
+  font-family: var(--font-cormorant), Georgia, serif;
+  font-style: italic;
+  font-stretch: normal;
+  font-variation-settings: normal;
+}
+[data-estilo="salon"] .titular {
+  font-weight: 500;
+  line-height: 0.95;
+  letter-spacing: -0.01em;
+}
+[data-estilo="salon"] .subtitulo {
+  font-weight: 600;
+  /* Cormorant tiene minúsculas bajas: se agranda para igualar la altura de Archivo. */
+  font-size-adjust: 0.5;
 }
 
 /* Puntos guía entre servicio y precio, como en la pizarra del local. */
