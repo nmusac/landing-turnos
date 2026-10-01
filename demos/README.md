@@ -1,5 +1,10 @@
 # Demos personalizadas para prospectos
 
+> **Con Supabase configurado** (`SUPABASE_URL` y `SUPABASE_SECRET_KEY` en el sitio de demos), los
+> prospectos se leen de la tabla **`prospectos`** de Supabase (mismas columnas que la hoja de abajo;
+> se editan en Table Editor) y las reservas de las demos también van a Supabase. La planilla queda
+> solo para mandar los emails. Lo que sigue describe las columnas, que son las mismas en los dos.
+
 Un único sitio de demos de la agencia muestra la landing de cada peluquería
 prospectada con **su** nombre, dirección, fotos, horarios y colores, sin tocar
 código ni publicar nada: cada prospecto es una fila de una planilla.

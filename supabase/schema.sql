@@ -41,7 +41,32 @@ create table if not exists bloqueos (
 
 create index if not exists bloqueos_negocio_inicio on bloqueos (negocio, inicio);
 
+-- Demos para prospectos (ver demos/README.md). Una fila por prospecto; la carga
+-- el flujo de n8n y se puede corregir a mano en Table Editor. Mismas columnas que
+-- la hoja "prospectos" de la planilla, para poder importarla como CSV.
+create table if not exists prospectos (
+  slug text primary key check (slug ~ '^[a-z0-9-]{1,80}$'),
+  nombre text not null,
+  rubro text,
+  frase text,
+  direccion text,
+  barrio text,
+  ciudad text,
+  telefono text,
+  whatsapp text,
+  instagram text,
+  foto_portada text,
+  fotos_galeria text,
+  horarios text,
+  color_hero text,
+  color_acento text,
+  email_avisos text,
+  estilo text check (estilo is null or estilo in ('', 'verde', 'noche', 'salon')),
+  creado timestamptz not null default now()
+);
+
 -- RLS activado y sin políticas: la clave pública no puede leer ni escribir nada.
--- Solo el servidor de cada sitio, con la clave secreta, accede a estas tablas.
+-- Solo el servidor de cada sitio (y n8n), con la clave secreta, accede a estas tablas.
 alter table reservas enable row level security;
 alter table bloqueos enable row level security;
+alter table prospectos enable row level security;

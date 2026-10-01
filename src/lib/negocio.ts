@@ -4,17 +4,27 @@ import { negocio as base, type Negocio } from "@/negocio.config";
 import { appsScriptConfigurado, llamarAppsScript } from "./appsScript";
 import { COOKIE_ESTILO, esEstilo, type Estilo } from "./estilos";
 import { negocioDesdeProspecto, type FilaProspecto } from "./prospecto";
+import { supabase, supabaseConfigurado } from "./supabase";
 
 /** Las rutas /demo/* solo existen en el sitio de demos de la agencia (DEMOS=1). */
 export const demosActivas = () => process.env.DEMOS === "1";
 
+// Los prospectos se leen de Supabase (tabla prospectos) si está configurado; si
+// no, de la hoja "prospectos" de la planilla Demos (Apps Script).
+const prospectosDisponibles = () => supabaseConfigurado() || appsScriptConfigurado();
+
 // Se guarda la promesa de la fila, no el resultado: el título y la página de una
-// demo se arman a la vez y así comparten una sola lectura de la planilla. Se
-// guarda la fila (y no el negocio armado) porque cada estilo la arma distinto.
+// demo se arman a la vez y así comparten una sola lectura. Se guarda la fila (y
+// no el negocio armado) porque cada estilo la arma distinto.
 const cache = new Map<string, { vence: number; valor: Promise<FilaProspecto | null> }>();
 const DURACION_CACHE = 60_000;
 
 async function leerFila(slug: string): Promise<FilaProspecto | null> {
+  if (supabaseConfigurado()) {
+    const { data, error } = await supabase().from("prospectos").select("*").eq("slug", slug).maybeSingle();
+    if (error) throw error;
+    return data as FilaProspecto | null;
+  }
   // Apps Script a veces falla una vez sin motivo; se reintenta antes de mostrar un error.
   for (let intento = 1; ; intento++) {
     try {
@@ -53,7 +63,7 @@ export async function estiloDemo(pedido: unknown): Promise<Estilo | undefined> {
  */
 export async function resolverNegocio(slug?: string | null, estilo?: Estilo): Promise<Negocio | null> {
   if (!slug) return base;
-  if (!demosActivas() || !appsScriptConfigurado() || !/^[a-z0-9-]{1,80}$/.test(slug)) return null;
+  if (!demosActivas() || !prospectosDisponibles() || !/^[a-z0-9-]{1,80}$/.test(slug)) return null;
   const fila = await filaProspecto(slug);
   return fila ? negocioDesdeProspecto(fila, base, estilo) : null;
 }

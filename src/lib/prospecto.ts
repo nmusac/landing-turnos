@@ -4,7 +4,8 @@ import type { Foto, Horarios, Negocio } from "@/negocio.config";
 import { ESTILOS, esEstilo, type Estilo } from "./estilos";
 import { aWhatsapp } from "./formato";
 
-export type FilaProspecto = Record<string, string | undefined>;
+// La planilla devuelve "" en las celdas vacías; Supabase devuelve null.
+export type FilaProspecto = Record<string, string | null | undefined>;
 
 const sinTildes = (s: string) => s.normalize("NFD").replace(/\p{M}/gu, "").toLowerCase();
 
@@ -55,13 +56,13 @@ export function normalizarFoto(url: string): string {
   return url;
 }
 
-const leerFotos = (texto: string | undefined, alt: string): Foto[] =>
+const leerFotos = (texto: string | null | undefined, alt: string): Foto[] =>
   (texto ?? "")
     .split(/[\s,]+/)
     .filter((u) => /^https:\/\//.test(u))
     .map((u, i) => ({ src: normalizarFoto(u), alt: `${alt} ${i + 1}` }));
 
-const esColor = (c: string | undefined): c is string => !!c && /^#[0-9a-f]{6}$/i.test(c.trim());
+const esColor = (c: string | null | undefined): c is string => !!c && /^#[0-9a-f]{6}$/i.test(c.trim());
 
 /** Texto claro u oscuro según qué contraste mejor sobre el color dado. */
 function textoSobre(fondo: string, claro: string, oscuro: string) {
