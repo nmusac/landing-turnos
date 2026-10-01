@@ -91,7 +91,9 @@ function whatsappDe(...valores: (string | undefined)[]) {
 export function estiloSegunRubro(rubro: string, nombre: string): Estilo {
   const texto = sinTildes(`${rubro} ${nombre}`);
   if (/barber/.test(texto)) return "noche";
-  if (/belleza|estetica|beauty|salon|mujer|femenin|unas|nails|spa\b|maquillaje|lashes|cejas/.test(texto)) return "salon";
+  if (/belleza|estetic|beauty|salon|mujer|femenin|unas|nails|manicur|spa\b|maquill|lashes|pestan|cejas|depila/.test(texto)) {
+    return "salon";
+  }
   return "verde";
 }
 
