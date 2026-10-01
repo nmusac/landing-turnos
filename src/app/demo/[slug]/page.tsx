@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Landing } from "@/components/Landing";
 import { SelectorEstilo } from "@/components/SelectorEstilo";
+import { metadataDemo } from "@/lib/metadata";
 import { estiloDemo, resolverNegocio } from "@/lib/negocio";
 
 // Demo de la landing para un prospecto, armada desde su fila en la planilla (demos/README.md).
@@ -14,12 +15,7 @@ async function negocioDe({ params, searchParams }: PageProps<"/demo/[slug]">) {
 export async function generateMetadata(props: PageProps<"/demo/[slug]">): Promise<Metadata> {
   const n = await negocioDe(props);
   if (!n) return {};
-  return {
-    title: `${n.nombre} · Reservá tu turno`,
-    description: n.frase,
-    robots: { index: false, follow: false },
-    openGraph: { title: n.nombre, description: n.frase, images: [n.fotos.portada.src] },
-  };
+  return metadataDemo(n, `${n.nombre} · Reservá tu turno`);
 }
 
 export default async function Demo(props: PageProps<"/demo/[slug]">) {
