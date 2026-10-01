@@ -65,6 +65,11 @@ create table if not exists prospectos (
   creado timestamptz not null default now()
 );
 
+-- Link a la demo, calculado a partir del slug (no se carga a mano ni desde n8n).
+-- Si cambia la dirección del sitio de demos, borrar la columna y volver a crearla.
+alter table prospectos add column if not exists link text
+  generated always as ('https://landing-turnos-six.vercel.app/demo/' || slug) stored;
+
 -- RLS activado y sin políticas: la clave pública no puede leer ni escribir nada.
 -- Solo el servidor de cada sitio (y n8n), con la clave secreta, accede a estas tablas.
 alter table reservas enable row level security;
