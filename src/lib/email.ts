@@ -1,4 +1,5 @@
 import "server-only";
+import { createTransport, type Transporter } from "nodemailer";
 import { appsScriptConfigurado, llamarAppsScript } from "./appsScript";
 
 export type Email = {
@@ -9,13 +10,67 @@ export type Email = {
   responderA?: string;
 };
 
-// Hoy los emails salen de la cuenta de Google dueña de la planilla (MailApp,
-// gratis, ~100 por día). Al pasar a Supabase se agrega acá otro proveedor (ej. Resend).
+// Cómo salen los emails, en este orden:
+// 1. SMTP (ej. Zoho) si están SMTP_HOST, SMTP_USER, SMTP_PASS y EMAIL_FROM: sale
+//    desde un dominio con SPF/DKIM, así no cae en spam.
+// 2. Apps Script de la planilla (MailApp) si están GOOGLE_SHEETS_URL/SECRET.
+// 3. En desarrollo, sin ninguno, se muestra en la consola.
+
+function smtp() {
+  const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, EMAIL_FROM } = process.env;
+  if (!SMTP_HOST || !SMTP_USER || !SMTP_PASS || !EMAIL_FROM) return null;
+  return { host: SMTP_HOST, port: Number(SMTP_PORT) || 465, user: SMTP_USER, pass: SMTP_PASS, desde: EMAIL_FROM };
+}
+
+let transporte: Transporter | undefined;
+
+function transporteSmtp(c: NonNullable<ReturnType<typeof smtp>>) {
+  return (transporte ??= createTransport({
+    host: c.host,
+    port: c.port,
+    secure: c.port === 465, // 465 = SSL directo; 587 = STARTTLS
+    auth: { user: c.user, pass: c.pass },
+    connectionTimeout: 10_000,
+    greetingTimeout: 10_000,
+    socketTimeout: 15_000,
+  }));
+}
+
+/** Versión en texto simple del HTML (los filtros de spam desconfían de los emails solo HTML). */
+export function htmlATexto(html: string) {
+  return html
+    .replace(/<a [^>]*href="([^"]*)"[^>]*>([\s\S]*?)<\/a>/gi, (_, href: string, texto: string) => `${texto.trim()}: ${href}`)
+    .replace(/<(p|h1|h2|table|div)[\s>]/gi, (m) => `\n${m}`)
+    .replace(/<\/(p|h1|h2|tr|div)>|<br\s*\/?>/gi, "\n")
+    .replace(/<\/td>/gi, " ")
+    .replace(/<[^>]+>/g, "")
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/[ \t]+/g, " ")
+    .replace(/ *\n */g, "\n")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+}
+
 export async function enviarEmail(e: Email) {
+  const c = smtp();
+  if (c) {
+    await transporteSmtp(c).sendMail({
+      from: { name: e.remitente, address: c.desde },
+      to: e.para,
+      subject: e.asunto,
+      html: e.html,
+      text: htmlATexto(e.html),
+      ...(e.responderA && { replyTo: e.responderA }),
+    });
+    return;
+  }
   if (appsScriptConfigurado()) {
     await llamarAppsScript("enviarEmail", { email: e });
     return;
   }
-  const texto = e.html.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
-  console.log(`[email sin enviar: falta Google Sheets] De: ${e.remitente} | Para: ${e.para} | ${e.asunto}\n  ${texto}`);
+  console.log(`[email sin enviar: falta SMTP o Google Sheets] De: ${e.remitente} | Para: ${e.para} | ${e.asunto}\n${htmlATexto(e.html)}`);
 }
