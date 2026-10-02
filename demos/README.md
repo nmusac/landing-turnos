@@ -64,7 +64,10 @@ Solo `slug` y `nombre` son obligatorias. Lo que quede vacío sale de la plantill
   Google Drive compartida como "Cualquier persona con el enlace" y pegar el link de
   Drive (`drive.google.com/file/d/…`): el sitio lo convierte solo.
 - **Subidas a mano:** igual que Instagram, vía Drive.
-- Sin fotos, la demo usa las de la plantilla.
+- Sin fotos propias (o solo Street View), la demo usa fotos genéricas del rubro (uñas, depilación, pestañas,
+  masajes, estética, peluquería o barbería), distintas según la demo. Ver `src/lib/rubros.ts`.
+- Los servicios también dependen del rubro: uñas, depilación, pestañas, masajes y estética tienen los suyos
+  (mismos 5 lugares e ids que la plantilla); peluquerías y barberías usan los de la plantilla.
 
 ### Horarios
 

@@ -3,6 +3,7 @@
 import type { Foto, Horarios, Negocio } from "@/negocio.config";
 import { ESTILOS, esEstilo, type Estilo } from "./estilos";
 import { aWhatsapp } from "./formato";
+import { fotosGenericas, rubroDe, serviciosDe } from "./rubros";
 
 // La planilla devuelve "" en las celdas vacías; Supabase devuelve null.
 export type FilaProspecto = Record<string, string | null | undefined>;
@@ -56,10 +57,11 @@ export function normalizarFoto(url: string): string {
   return url;
 }
 
+// Street View muestra la calle, no el local: no cuenta como foto propia.
 const leerFotos = (texto: string | null | undefined, alt: string): Foto[] =>
   (texto ?? "")
     .split(/[\s,]+/)
-    .filter((u) => /^https:\/\//.test(u))
+    .filter((u) => /^https:\/\//.test(u) && !/streetviewpixels/.test(u))
     .map((u, i) => ({ src: normalizarFoto(u), alt: `${alt} ${i + 1}` }));
 
 const esColor = (c: string | null | undefined): c is string => !!c && /^#[0-9a-f]{6}$/i.test(c.trim());
@@ -113,6 +115,9 @@ export function negocioDesdeProspecto(f: FilaProspecto, base: Negocio, estiloPed
   const rubro = t("rubro") ?? "Peluquería";
   const fotos = leerFotos(f.foto_portada, `Foto de ${nombre}`);
   const galeria = leerFotos(f.fotos_galeria, `Foto de ${nombre}`);
+  const tipo = rubroDe(rubro, nombre);
+  // Sin fotos propias, genéricas del rubro (las de la plantilla serían iguales en todas las demos).
+  const genericas = fotosGenericas(tipo, slug);
 
   const columna = t("estilo")?.toLowerCase();
   const estiloFila = esEstilo(columna) ? columna : estiloSegunRubro(rubro, nombre);
@@ -137,12 +142,13 @@ export function negocioDesdeProspecto(f: FilaProspecto, base: Negocio, estiloPed
     instagram: usuarioInstagram(t("instagram")),
     email: undefined,
     emailAvisos: t("email_avisos"),
+    servicios: serviciosDe(tipo, base.servicios),
     horarios: (t("horarios") && leerHorarios(t("horarios")!)) || base.horarios,
     // Un solo profesional: el paso "Con quién" no aparece.
     profesionales: [{ id: "local", nombre }],
     fotos: {
-      portada: fotos[0] ?? galeria[0] ?? base.fotos.portada,
-      galeria: galeria.length ? galeria.slice(0, 4) : fotos.length > 1 ? fotos.slice(1, 5) : base.fotos.galeria,
+      portada: fotos[0] ?? galeria[0] ?? genericas.portada,
+      galeria: galeria.length ? galeria.slice(0, 4) : fotos.length > 1 ? fotos.slice(1, 5) : genericas.galeria,
     },
     estilo,
     tema: {
